@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Todo;
+use Illuminate\Support\Facades\DB;
 
 class TodosController extends Controller
 {
@@ -14,8 +15,15 @@ class TodosController extends Controller
      */
     public function index()
     {
-        $todos = Todo::all();
+//        $todos = Todo::all();
+        $todos = DB::table('todos')->where('completed','0')->paginate(5);//truyen vao so todo se hien thi tren 1 trang
         return view('todos.index')->with('todos',$todos);
+    }
+    public function completed()
+    {
+//        $todos = Todo::all();
+        $todos = DB::table('todos')->where('completed','1')->paginate(5);//truyen vao so todo se hien thi tren 1 trang
+        return view('todos.completed')->with('todos',$todos);
     }
 
     /**
@@ -38,7 +46,7 @@ class TodosController extends Controller
     {
         $this->validate(request(), [//validate() có hai tham số +Tham số thứ nhất là đối tượng request chứa thông tin về dữ liệu được gửi lên từ người dùng.
                                     //                          +Tham số thứ hai là một mảng các quy tắc kiểm tra cho từng trường nhập liệu có trong request.
-            'name' => 'required|min:6|max:12',//bắt buộc nhập, tối thiểu 6 ký tự, tối đa 12 ký tự.
+            'name' => 'required|min:3|max:30',//bắt buộc nhập, tối thiểu 6 ký tự, tối đa 12 ký tự.
             'description' => 'required' //bắt buộc nhập
         ]);
         $data = request()->all();//lấy tất cả dữ liệu được gửi đến từ form thông qua Laravel request với phương thức all()
@@ -100,7 +108,7 @@ class TodosController extends Controller
 
         $todo->save();
 
-        session()->flash('success', 'Todo updated successfully.');
+        session()->flash('success', 'Cập nhật thành công.');
 
         return redirect('/todos');
     }
@@ -115,7 +123,7 @@ class TodosController extends Controller
     {
         $todo->delete();
 
-        session()->flash('success', 'Todo deleted successfully.');
+        session()->flash('success', 'Xoá việc thành công!.');
 
         return redirect('/todos');
     }
@@ -125,7 +133,7 @@ class TodosController extends Controller
         $todo->completed = true;
         $todo->save();
 
-        session()->flash('success', 'Todo completed successfully.');
+        session()->flash('success', 'Bạn đã hoàn thành công việc!.');
 
         return redirect('/todos');
     }

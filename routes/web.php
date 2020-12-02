@@ -21,6 +21,8 @@ Route::get('/todos', 'TodosController@index');
 
 Route::get('todos/{todo}','TodosController@show');
 
+Route::get('completed','TodosController@completed');
+
 Route::get('new-todos','TodosController@create');//tra ve view create
 
 Route::post('/store-todos','TodosController@store');//luu vao csdl
